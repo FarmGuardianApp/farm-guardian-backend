@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Service
+  postgres:
+    image: postgres:15-alpine
+    container_name: farm_guardian_postgres_v2
+    restart: always
+    environment:
+      # This is the reliable way to create the user and database.
+      POSTGRES_USER: newuser
+      POSTGRES_PASSWORD: newpassword
+      POSTGRES_DB: farmguardian_db_v2
+    ports:
+      # We are back to using the standard port 5432
+      - "5432:5432"
+    volumes:
+      # This mounts our simplified SQL script to be run on startup
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      # This volume persists the data
+      - postgres_volume_v2:/var/lib/postgresql/data
+
+  # InfluxDB Service (no changes needed here)
+  influxdb:
+    image: influxdb:2.7
+    container_name: farm_guardian_influxdb_v2
+    restart: always
+    ports:
+      - "8086:8086"
+    volumes:
+      - influxdb_volume_v2:/var/lib/influxdb2
+
+# Define the named volumes
+volumes:
+  postgres_volume_v2:
+  influxdb_volume_v2:
+

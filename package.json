@@ -1,0 +1,21 @@
+{
+    "name": "farm-guardian-backend",
+    "version": "1.0.0",
+    "description": "Backend API for the Farm Guardian application.",
+    "main": "src/index.js",
+    "scripts": {
+        "start": "node index.js",
+        "dev": "nodemon src/index.js"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@influxdata/influxdb-client": "^1.35.0",
+        "express": "^4.18.2",
+        "pg": "^8.11.3"
+    },
+    "devDependencies": {
+        "nodemon": "^2.0.22"
+    }
+}
