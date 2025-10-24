@@ -2,6 +2,7 @@
 
 const { InfluxDB, Point } = require('@influxdata/influxdb-client');
 
+// This token MUST match the DOCKER_INFLUXDB_INIT_ADMIN_TOKEN in docker-compose.yml
 const token = 'my-super-secret-token';
 const org = 'FarmGuardian';
 const bucket = 'sensor_data';
@@ -18,7 +19,8 @@ function writeSensorData(farmId, data) {
   
   writeApi.writePoint(point);
   writeApi.flush().catch(error => {
-    console.error('Error writing to InfluxDB:', error);
+    // We add more detailed error logging here.
+    console.error('Error writing to InfluxDB:', error.body || error.message);
   });
 }
 

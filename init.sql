@@ -1,14 +1,23 @@
--- This script runs automatically inside the 'farmguardian_db_v2' database
--- after the 'newuser' has been created.
-
 -- Create the 'farms' table to store information about each farm.
 CREATE TABLE farms (
-    id SERIAL PRIMARY KEY, -- Automatically incrementing integer ID
-    name VARCHAR(100) NOT NULL, -- The name of the farm
-    location VARCHAR(255), -- The geographical location of the farm
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP -- Automatically set the creation date
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    location VARCHAR(255),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Grant permissions for our user to use the new table.
-GRANT ALL ON TABLE farms TO newuser;
+-- --- NEW --- Create the 'users' table for authentication
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    phone_number VARCHAR(20) NOT NULL UNIQUE, -- Phone numbers must be unique
+    otp VARCHAR(100), -- To store the hashed OTP
+    otp_expires_at TIMESTAMP WITH TIME ZONE, -- To check if OTP is expired
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
 
+
+-- Grant permissions for our user to use the new tables.
+-- Note: In a real production app, you might have more granular permissions.
+GRANT ALL ON TABLE farms TO newuser;
+GRANT ALL ON TABLE users TO newuser;
