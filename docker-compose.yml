@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  # PostgreSQL Service
+  # PostgreSQL Service (no changes)
   postgres:
     image: postgres:15-alpine
     container_name: farm_guardian_postgres_v2
@@ -16,7 +16,7 @@ services:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       - postgres_volume_v2:/var/lib/postgresql/data
 
-  # InfluxDB Service
+  # InfluxDB Service (no changes)
   influxdb:
     image: influxdb:2.7
     container_name: farm_guardian_influxdb_v2
@@ -36,8 +36,23 @@ services:
     volumes:
       - influxdb_volume_v2:/var/lib/influxdb2
 
+  # --- NEW ---
+  # MongoDB Service for storing analytics & ML results
+  mongo:
+    image: mongo:latest
+    container_name: farm_guardian_mongo
+    restart: always
+    ports:
+      - "27017:27017" # Default MongoDB port
+    volumes:
+      - mongo_data:/data/db
+    # We can add a user/password here later for security
+    # environment:
+    #   MONGO_INITDB_ROOT_USERNAME: admin
+    #   MONGO_INITDB_ROOT_PASSWORD: password
+
 # Define the named volumes
 volumes:
   postgres_volume_v2:
   influxdb_volume_v2:
-
+  mongo_data: # --- ADD THIS ---

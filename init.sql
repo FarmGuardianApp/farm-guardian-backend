@@ -6,7 +6,7 @@ CREATE TABLE farms (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- --- NEW --- Create the 'users' table for authentication
+-- Create the 'users' table for authentication
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -16,8 +16,21 @@ CREATE TABLE users (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+-- --- NEW ---
+-- Create the 'alerts' table
+CREATE TABLE alerts (
+    id SERIAL PRIMARY KEY,
+    farm_id INT NOT NULL,
+    sensor VARCHAR(50) NOT NULL,
+    status VARCHAR(50) NOT NULL, -- e.g., 'warning_high', 'critical_low'
+    message VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
 
--- Grant permissions for our user to use the new tables.
--- Note: In a real production app, you might have more granular permissions.
+-- Grant all necessary permissions to our 'newuser'
 GRANT ALL ON TABLE farms TO newuser;
 GRANT ALL ON TABLE users TO newuser;
+GRANT ALL ON TABLE alerts TO newuser;
+GRANT ALL ON SEQUENCE farms_id_seq TO newuser;
+GRANT ALL ON SEQUENCE users_id_seq TO newuser;
+GRANT ALL ON SEQUENCE alerts_id_seq TO newuser;
