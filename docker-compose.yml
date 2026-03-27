@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Service (no changes)
+  postgres:
+    image: postgres:15-alpine
+    container_name: farm_guardian_postgres_v2
+    restart: always
+    environment:
+      POSTGRES_USER: newuser
+      POSTGRES_PASSWORD: newpassword
+      POSTGRES_DB: farmguardian_db_v2
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - postgres_volume_v2:/var/lib/postgresql/data
+
+  # InfluxDB Service (no changes)
+  influxdb:
+    image: influxdb:2.7
+    container_name: farm_guardian_influxdb_v2
+    restart: always
+    # --- THIS IS THE FIX ---
+    # We are adding back the environment variables to properly configure InfluxDB on startup.
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: admin
+      DOCKER_INFLUXDB_INIT_PASSWORD: password1234
+      DOCKER_INFLUXDB_INIT_ORG: FarmGuardian
+      DOCKER_INFLUXDB_INIT_BUCKET: sensor_data
+      # This token MUST match the token in our application code.
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: my-super-secret-token 
+    ports:
+      - "8086:8086"
+    volumes:
+      - influxdb_volume_v2:/var/lib/influxdb2
+
+  # --- NEW ---
+  # MongoDB Service for storing analytics & ML results
+  mongo:
+    image: mongo:latest
+    container_name: farm_guardian_mongo
+    restart: always
+    ports:
+      - "27017:27017" # Default MongoDB port
+    volumes:
+      - mongo_data:/data/db
+    # We can add a user/password here later for security
+    # environment:
+    #   MONGO_INITDB_ROOT_USERNAME: admin
+    #   MONGO_INITDB_ROOT_PASSWORD: password
+
+# Define the named volumes
+volumes:
+  postgres_volume_v2:
+  influxdb_volume_v2:
+  mongo_data: # --- ADD THIS ---
